@@ -17,7 +17,7 @@ exports.test_handle_GET_request = function (test) {
     var requestMock = sinon.mock(request);
     requestMock.method = 'GET';
 
-    var http_module = require('../modules/http-module');
+    var http_module = require('./modules/http-module');
 
     http_module.handle_request(requestMock, response);
 
