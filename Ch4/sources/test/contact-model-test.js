@@ -2,11 +2,6 @@ var mongoose = require('mongoose');
 var should = require('should');
 var prepare = require('./prepare');
 
-var uri = 'mongodb://admin:8rjgg3rplmhe9tu@cluster0-shard-00-00-5mlyc.mongodb.net:27017,cluster0-shard-00-01-5mlyc.mongodb.net:27017,cluster0-shard-00-02-5mlyc.mongodb.net:27017/contacts-test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
-mongoose.connect(uri, {
-  useMongoClient: true
-});
-
 var contactSchema = new mongoose.Schema({
   primarycontactnumber: {
     type: String,
@@ -27,12 +22,19 @@ var contactSchema = new mongoose.Schema({
 
 var Contact = mongoose.model('Contact', contactSchema);
 
+var uri = 'mongodb://admin:admin@cluster0-shard-00-00-5mlyc.mongodb.net:27017,cluster0-shard-00-01-5mlyc.mongodb.net:27017,cluster0-shard-00-02-5mlyc.mongodb.net:27017/contacts-test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
+mongoose.connect(uri, {
+  useMongoClient: true,
+  keepAlive: 1,
+  connectTimeoutMS: 30000
+});
+
 describe('Contact: models', function () {
 
 
   describe('#create()', function () {
     it('Should create a new Contact', function (done) {
-
+      this.timeout(15000);
       var contactModel = {
         "firstname": "John",
         "lastname": "Douglas",
@@ -45,8 +47,10 @@ describe('Contact: models', function () {
         "emailaddresses": ["j.douglas@xyz.com"],
         "othercontactnumbers": ['+359777223346', '+359777223347']
       };
+      console.log('1');
 
       Contact.create(contactModel, function (err, createdModel) {
+        console.log('2');
         // Check that no error occured
         should.not.exist(err);
         // Assert that the returned contact has  is what we expect

@@ -34,7 +34,7 @@ var john_douglas = new Contact({
 	groups: ["Dev"]
 });
 var db = mongoose.connection;
-var uri = 'mongodb://admin:8rjgg3rplmhe9tu@cluster0-shard-00-00-5mlyc.mongodb.net:27017,cluster0-shard-00-01-5mlyc.mongodb.net:27017,cluster0-shard-00-02-5mlyc.mongodb.net:27017/contacts?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
+var uri = 'mongodb://admin:admin@cluster0-shard-00-00-5mlyc.mongodb.net:27017,cluster0-shard-00-01-5mlyc.mongodb.net:27017,cluster0-shard-00-02-5mlyc.mongodb.net:27017/contacts?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
 mongoose.connect(uri, {
 	useMongoClient: true
 });
