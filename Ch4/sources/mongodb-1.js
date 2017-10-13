@@ -1,12 +1,17 @@
 var mongoose = require('mongoose');
 
 var contactSchema = new mongoose.Schema({
-	primarycontactnumber: {type: String, index: {unique: true}},
+	primarycontactnumber: {
+		type: String,
+		index: {
+			unique: true
+		}
+	},
 	firstname: String,
 	lastname: String,
 	title: String,
 	company: String,
-	jobtitle: String,	
+	jobtitle: String,
 	othercontactnumbers: [String],
 	primaryemailaddress: String,
 	emailaddresses: [String],
@@ -29,14 +34,16 @@ var john_douglas = new Contact({
 	groups: ["Dev"]
 });
 var db = mongoose.connection;
-mongoose.connect('mongodb://localhost/contacts');
-john_douglas.save(function(error){
+var uri = 'mongodb://admin:8rjgg3rplmhe9tu@cluster0-shard-00-00-5mlyc.mongodb.net:27017,cluster0-shard-00-01-5mlyc.mongodb.net:27017,cluster0-shard-00-02-5mlyc.mongodb.net:27017/contacts?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
+mongoose.connect(uri, {
+	useMongoClient: true
+});
+john_douglas.save(function (error) {
 	if (error) {
 		console.log('Error while saving contact for Mr. John Douglas');
 		console.log(error);
-	} 
-	else {
+	} else {
 		john_douglas.save();
-		console.log('Contact for Mr. John Douglas has been successfully	stored');		
-	}	
+		console.log('Contact for Mr. John Douglas has been successfully	stored');
+	}
 });
