@@ -125,7 +125,7 @@ app.get('/contacts', function (request, response) {
 
 		})
 		.on('error', function (error) {
-			console.log('Error while reading', error)
+			console.log('Error while reading', error);
 		})
 		.on('close', function () {
 			console.log('Closing db stream');
@@ -134,7 +134,7 @@ app.get('/contacts', function (request, response) {
 			console.log('Db stream closed');
 			response.end(']');
 
-		})
+		});
 
 });
 
