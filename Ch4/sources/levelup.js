@@ -12,6 +12,7 @@ var express = require('express'),
     logger = require('morgan'),
     methodOverride = require('method-override'),
     errorHandler = require('errorhandler'),
+    leveldown = require('leveldown'),
     levelup = require('levelup');
 var app = express();
 var url = require('url');
@@ -29,10 +30,7 @@ if ('development' == app.get('env')) {
     app.use(errorHandler());
 }
 
-var db = levelup('./data', {
-    valueEncoding: 'json'
-});
-db.put('+359777123456', {
+var myJSON = JSON.stringify({
     "firstname": "Joe",
     "lastname": "Smith",
     "title": "Mr.",
@@ -49,8 +47,16 @@ db.put('+359777123456', {
     ],
     "groups": [
         "Dev",
-        "Family"
+        "Family",
+        "Prod"
     ]
+});
+
+var db = levelup(leveldown('./data'), {
+    valueEncoding: 'json'
+});
+db.put('+359777123456', myJSON, function (err) {
+    if (err) return console.log('Ooops!', err);
 });
 
 app.get('/contacts/:number', function (request, response) {
