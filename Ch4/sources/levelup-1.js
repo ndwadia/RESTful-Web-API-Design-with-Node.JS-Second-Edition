@@ -12,6 +12,7 @@ var express = require('express'),
 	logger = require('morgan'),
 	methodOverride = require('method-override'),
 	errorHandler = require('errorhandler'),
+	leveldown = require('leveldown'),
 	levelup = require('levelup');
 var app = express();
 var url = require('url');
@@ -31,7 +32,7 @@ if ('development' == app.get('env')) {
 }
 
 
-var db = levelup('./contact', {
+var db = levelup(leveldown('./contact'), {
 	valueEncoding: 'json'
 });
 
