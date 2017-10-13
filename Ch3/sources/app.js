@@ -6,24 +6,24 @@ var express = require('express');
 var path = require('path');
 
 var logger = require('morgan');
-// var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
 var contacts = require('./modules/contacts');
 var http = require('http');
-var url = require('url');
 
 var app = express();
 
 app.get('/contacts',
 	function (request, response) {
-		var get_params = url.parse(request.url, true).query;
 
-		if (Object.keys(get_params).length === 0) {
+		if (Object.keys(request.query).length === 0) {
 			response.setHeader('content-type', 'application/json');
 			response.end(JSON.stringify(contacts.list()));
 		} else {
+			var keys = Object.keys(request.query);
+			var queryKey = keys[0];
+			var queryValue = request.query[queryKey];
+			console.log(queryKey + ' ' + queryValue);
 			response.setHeader('content-type', 'application/json');
-			response.end(JSON.stringify(contacts.query_by_arg(get_params.arg, get_params.value)));
+			response.end(JSON.stringify(contacts.query_by_arg(queryKey, queryValue)));
 		}
 	}
 );
