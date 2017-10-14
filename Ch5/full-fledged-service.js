@@ -34,8 +34,12 @@ if ('development' == app.get('env')) {
 	app.use(errorHandler());
 }
 
+var db = mongoose.connection;
+var uri = 'mongodb://admin:admin@cluster0-shard-00-00-5mlyc.mongodb.net:27017,cluster0-shard-00-01-5mlyc.mongodb.net:27017,cluster0-shard-00-02-5mlyc.mongodb.net:27017/contacts?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
+mongoose.connect(uri, {
+	useMongoClient: true
+});
 
-mongoose.connect('mongodb://localhost/contacts');
 var mongodb = mongoose.connection;
 
 var contactSchema = new mongoose.Schema({
@@ -130,31 +134,20 @@ app.delete('/contacts/:primarycontactnumber/image', function (request, response)
 	_v2.deleteImage(gfs, mongodb.db, request.params.primarycontactnumber, response);
 });
 
-app.get('/contacts', cache('minutes', 1), function (request, response) {
+app.get('/contacts', function (request, response) {
 	console.log('redirecting to /v2/contacts');
-	response.redirect('/v2/contacts');
-
+	response.redirect("/v2/contacts");
 });
-
-
-app.get('/contacts/:primarycontactnumber', function (request, response) {
-
-	console.log(request.url + ' : querying for ' + request.params.primarycontactnumber);
-	_v2.findByNumber(Contact, request.params.primarycontactnumber, response);
-});
-
-
 
 //version 2 explicit routing
 
-app.get('/v2/contacts', cache('minutes', 1), function (request, response) {
+app.get('/v2/contacts', function (request, response) {
 	var get_params = url.parse(request.url, true).query;
 
 	if (Object.keys(get_params).length == 0) {
 		_v2.list(Contact, response);
 	} else {
-
-		if (get_params['limit'] != null || get_params['page'] != null) {
+		if (get_params.limit != null || get_params.page != null) {
 			_v2.paginate(Contact, request, response);
 		} else {
 			var key = Object.keys(get_params)[0];

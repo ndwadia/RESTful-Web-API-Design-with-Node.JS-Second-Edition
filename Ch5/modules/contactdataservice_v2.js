@@ -34,7 +34,7 @@ exports.remove = function (model, _primarycontactnumber, response) {
 				});
 
 				if (response != null) {
-					response.send('Deleted');
+					response.status(200).send('Deleted');
 				}
 				return;
 			}
@@ -204,7 +204,7 @@ exports.findByNumber = function (model, _primarycontactnumber, response) {
 
 			if (response != null) {
 				response.setHeader('Content-Type', 'application/json');
-				response.send(result);
+				response.status(200).send(result);
 			}
 		}
 	});
@@ -243,7 +243,6 @@ exports.paginate = function (model, request, response) {
 
 			response.json({
 				object: 'contacts',
-				page_count: 20,
 				result: result
 			});
 
@@ -292,7 +291,7 @@ exports.query_by_arg = function (model, key, value, response) {
 
 			if (response != null) {
 				response.setHeader('Content-Type', 'application/json');
-				response.send(result);
+				response.status(200).send(result);
 			}
 		}
 	});
@@ -306,7 +305,7 @@ exports.updateImage = function (gfs, request, response) {
 		filename: 'image',
 		mode: 'w'
 	}));
-	response.send("Successfully uploaded image for primary contact number: " +
+	response.status(200).send("Successfully uploaded image for primary contact number: " +
 		_primarycontactnumber);
 
 };
@@ -320,7 +319,7 @@ exports.getImage = function (gfs, _primarycontactnumber, response) {
 	});
 
 	imageStream.on('error', function (error) {
-		response.send('404', 'Not found');
+		response.status(404).send('Not found');
 		return;
 	});
 
@@ -342,12 +341,12 @@ exports.deleteImage = function (gfs, mongodb, _primarycontactnumber, response) {
 		}
 
 		if (contact === null) {
-			response.send('404', 'Not found');
+			response.status(404).send('Not found');
 			return;
 		} else {
 			console.log('Successfully deleted image for primary contact number: ' + _primarycontactnumber);
 		}
 	});
 
-	response.send('Successfully deleted image for primary contact number: ' + _primarycontactnumber);
+	response.status(200).send('Successfully deleted image for primary contact number: ' + _primarycontactnumber);
 };
