@@ -102,7 +102,11 @@ exports.create = function (model, requestBody, response) {
 	user.save(function (error) {
 
 		if (!error) {
-			user.save();
+			response.writeHead(201, {
+				'Content-Type': 'text/plain'
+			});
+			response.end('Created');
+			return;
 		} else {
 			console.log('Checking if user saving failed due to already existing user:' + _username);
 			model.findOne({
