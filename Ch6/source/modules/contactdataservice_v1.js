@@ -40,7 +40,7 @@ exports.remove = function (model, _primarycontactnumber, response) {
 			}
 		}
 	});
-}
+};
 
 exports.update = function (model, requestBody, response) {
 
@@ -214,7 +214,7 @@ exports.list = function (model, response) {
 		}
 		return JSON.stringify(result);
 	});
-}
+};
 
 function toContact(body, Contact) {
 

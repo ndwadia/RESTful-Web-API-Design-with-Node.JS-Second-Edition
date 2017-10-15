@@ -40,7 +40,7 @@ exports.remove = function (model, _primarycontactnumber, response) {
 			}
 		}
 	});
-}
+};
 
 exports.update = function (model, requestBody, response) {
 
@@ -218,7 +218,7 @@ exports.list = function (model, response) {
 			});
 		}
 	});
-}
+};
 
 exports.paginate = function (model, request, response) {
 
@@ -243,7 +243,7 @@ exports.paginate = function (model, request, response) {
 			});
 
 		});
-}
+};
 
 function toContact(body, Contact) {
 
@@ -291,7 +291,7 @@ exports.query_by_arg = function (model, key, value, response) {
 			}
 		}
 	});
-}
+};
 
 exports.updateImage = function (gfs, request, response) {
 	var _primarycontactnumber = request.params.primarycontactnumber;
@@ -345,4 +345,4 @@ exports.deleteImage = function (gfs, mongodb, _primarycontactnumber, response) {
 	});
 
 	response.send('Successfully deleted image for primary contact number: ' + _primarycontactnumber);
-}
+};

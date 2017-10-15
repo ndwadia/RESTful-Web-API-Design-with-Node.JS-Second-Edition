@@ -39,7 +39,7 @@ exports.remove = function (model, _username, response) {
 			}
 		}
 	});
-}
+};
 
 exports.update = function (model, requestBody, response) {
 
