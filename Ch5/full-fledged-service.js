@@ -135,8 +135,23 @@ app.delete('/contacts/:primarycontactnumber/image', function (request, response)
 });
 
 app.get('/contacts', function (request, response) {
-	console.log('redirecting to /v2/contacts');
-	response.redirect("/v2/contacts");
+	var get_params = url.parse(request.url, true).query;
+
+	if (Object.keys(get_params).length == 0) {
+		_v2.list(Contact, response);
+	} else {
+		if (get_params.limit != null || get_params.page != null) {
+			_v2.paginate(Contact, request, response);
+		} else {
+			var key = Object.keys(get_params)[0];
+			var value = get_params[key];
+
+			_v2.query_by_arg(Contact,
+				key,
+				value,
+				response);
+		}
+	}
 });
 
 //version 2 explicit routing
