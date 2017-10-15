@@ -33,8 +33,10 @@ if ('development' == app.get('env')) {
 	app.use(errorHandler());
 }
 
-
-mongoose.connect('mongodb://localhost/contacts');
+var uri = 'mongodb://admin:admin@cluster0-shard-00-00-5mlyc.mongodb.net:27017,cluster0-shard-00-01-5mlyc.mongodb.net:27017,cluster0-shard-00-02-5mlyc.mongodb.net:27017/contacts?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';
+mongoose.connect(uri, {
+	useMongoClient: true
+});
 var mongodb = mongoose.connection;
 
 var contactSchema = new mongoose.Schema({
@@ -143,14 +145,14 @@ app.get('/v1/contacts/:primarycontactnumber', function (request, response) {
 });
 
 app.post('/v1/contacts/', function (request, response) {
-	_v1.update(Contact, request.body, response)
+	_v1.update(Contact, request.body, response);
 });
 
 app.put('/v1/contacts/', function (request, response) {
-	_v1.create(Contact, request.body, response)
+	_v1.create(Contact, request.body, response);
 });
 
-app.del('/v1/contacts/:primarycontactnumber', function (request, response) {
+app.delete('/v1/contacts/:primarycontactnumber', function (request, response) {
 	_v1.remove(Contact, request.params.primarycontactnumber, response);
 });
 
@@ -163,14 +165,14 @@ app.get('/contacts/:primarycontactnumber', function (request, response) {
 });
 
 app.post('/contacts/', function (request, response) {
-	_v2.update(Contact, request.body, response)
+	_v2.update(Contact, request.body, response);
 });
 
 app.put('/contacts/', function (request, response) {
-	_v2.create(Contact, request.body, response)
+	_v2.create(Contact, request.body, response);
 });
 
-app.del('/contacts/:primarycontactnumber', function (request, response) {
+app.delete('/contacts/:primarycontactnumber', function (request, response) {
 	_v2.remove(Contact, request.params.primarycontactnumber, response);
 });
 
@@ -178,26 +180,35 @@ app.get('/contacts/:primarycontactnumber/image', function (request, response) {
 	var gfs = Grid(mongodb.db, mongoose.mongo);
 	_v2.getImage(gfs, request.params.primarycontactnumber, response);
 
-})
+});
 
 app.post('/contacts/:primarycontactnumber/image', function (request, response) {
 	var gfs = Grid(mongodb.db, mongoose.mongo);
 	_v2.updateImage(gfs, request, response);
-})
+});
 
-app.del('/contacts/:primarycontactnumber/image', function (request, response) {
+app.delete('/contacts/:primarycontactnumber/image', function (request, response) {
 	var gfs = Grid(mongodb.db, mongoose.mongo);
 	_v2.deleteImage(gfs, mongodb.db, request.params.primarycontactnumber, response);
-})
+});
 
 app.get('/contacts', cache('minutes', 1), function (request, response) {
 	var get_params = url.parse(request.url, true).query;
-	console.log('redirecting to /v2/contacts');
-	response.writeHead(302, {
-		'Location': '/v2/contacts/'
-	});
-	response.end('Version 2 is found at URI /v2/contacts/ ');
+	if (Object.keys(get_params).length == 0) {
+		_v2.paginate(Contact, request, response);
+	} else {
+		if (get_params.limit != null || get_params.page != null) {
+			_v2.paginate(Contact, request, response);
+		} else {
+			var key = Object.keys(get_params)[0];
+			var value = get_params[key];
 
+			_v2.query_by_arg(Contact,
+				key,
+				value,
+				response);
+		}
+	}
 });
 
 
@@ -216,7 +227,7 @@ app.get('/v2/contacts', cache('minutes', 1), function (request, response) {
 	if (Object.keys(get_params).length == 0) {
 		_v2.paginate(Contact, request, response);
 	} else {
-		if (get_params['limit'] != null || get_params['page'] != null) {
+		if (get_params.limit != null || get_params.page != null) {
 			_v2.paginate(Contact, request, response);
 		} else {
 			var key = Object.keys(get_params)[0];
@@ -235,20 +246,19 @@ app.get('/v2/contacts/:primarycontactnumber/image', function (request, response)
 	var gfs = Grid(mongodb.db, mongoose.mongo);
 	_v2.getImage(gfs, request.params.primarycontactnumber, response);
 
-})
+});
 
 
 app.post('/v2/contacts/:primarycontactnumber/image', function (request, response) {
 	var gfs = Grid(mongodb.db, mongoose.mongo);
 	_v2.updateImage(gfs, request, response);
-})
+});
 
 
-app.del('/v2/contacts/:primarycontactnumber/image', function (request, response) {
+app.delete('/v2/contacts/:primarycontactnumber/image', function (request, response) {
 	var gfs = Grid(mongodb.db, mongoose.mongo);
 	_v2.deleteImage(gfs, mongodb.db, request.params.primarycontactnumber, response);
-})
-
+});
 
 app.get('/v2/contacts/:primarycontactnumber', function (request, response) {
 
@@ -257,14 +267,14 @@ app.get('/v2/contacts/:primarycontactnumber', function (request, response) {
 });
 
 app.post('/v2/contacts/', function (request, response) {
-	_v2.update(Contact, request.body, response)
+	_v2.update(Contact, request.body, response);
 });
 
 app.put('/v2/contacts/', function (request, response) {
-	_v2.create(Contact, request.body, response)
+	_v2.create(Contact, request.body, response);
 });
 
-app.del('/v2/contacts/:primarycontactnumber', function (request, response) {
+app.delete('/v2/contacts/:primarycontactnumber', function (request, response) {
 	_v2.remove(Contact, request.params.primarycontactnumber, response);
 });
 
